@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "sts-game": {
+      "command": "N:\\projects\\github\\Windows-MCP-Game\\.venv\\Scripts\\sts-game-mcp.exe",
+      "args": ["--log-level", "INFO"],
+      "env": {
+        "GAME_MCP_IMAGE_FORMAT": "png",
+        "GAME_MCP_OBSERVATION_TTL_S": "20",
+        "GAME_MCP_EMERGENCY_KEY": "scrolllock",
+        "GAME_MCP_CORNER_FAILSAFE": "1"
+      }
+    }
+  }
+}
