@@ -92,6 +92,46 @@ MCP 客戶端設定範例見 `docs/mcp-config.example.json`。不會自行修改
 | `GAME_MCP_CLICK_SETTLE_MS` | `60` | 游標放到目標後、按下前的停頓，讓遊戲先在一個影格內看到懸停（LibGDX 的 hitbox 需要） |
 | `GAME_MCP_IME_AUTOTOGGLE` | `1` | `press_key` 前若偵測到遊戲視窗的輸入法在中文模式，工具自己點一下 Shift 切成英數再送鍵；仍是中文則回 `IME_ACTIVE`（`GAME_MCP_ALLOW_IME_NATIVE=1` 可強制送出） |
 
+## 顧問模式（Advisor mode）
+
+上面那套桌面點擊／按鍵工具是 **v1 路徑，維持原樣不動**。顧問模式是另一條獨立、**完全不操作遊戲**的路線：
+[CommunicationMod](https://github.com/ForgottenArbiter/CommunicationMod) 把遊戲狀態推給一個單向的傾印程式，
+AI 只讀檔並建議該怎麼打，實際操作由人類完成。細節與 `config.properties` 範例見
+`docs/COMMUNICATIONMOD_PROTOCOL.md`。
+
+兩支獨立的 console 程式（都在 `game_mcp.bridge`，與 `server.py` 無關）：
+
+- **`sts-state-dump`**：由模組在遊戲程序內啟動。開機印一次 `ready`；之後只有在 MCP 伺服器於傾印目錄放下
+  `state.request` 時才會送一次 `STATE`（要求模組重送目前狀態的唯讀查詢）。允許送給遊戲的字串就這兩個，
+  其餘一律 `RuntimeError`，任何動作指令都送不出去，之後讀 stdin 每行一則 JSON，寫成傾印目錄下的 `latest.json` 與輕量的 `latest.meta.json`
+  （`{seq, received_wall, received_unix}`，供讀取端便宜地偵測變化）。`--out DIR` 指定目錄
+  （預設 `%LOCALAPPDATA%\sts-game-mcp\state`，可用 `GAME_MCP_STATE_DIR` 覆寫）；`--record-samples DIR`
+  另存每次推送為 `<時間>_<seq>.json`（保留策略同截圖目錄：每次寫入後只留最新 `--samples-keep N` 個，預設 500；
+  啟動時刪除超過 `--samples-max-age-h H` 小時的，預設 72）；`--stdin-encoding CODEC` 強制解碼編碼（預設先試 UTF-8，失敗改用系統
+  地區碼頁並以替代字元容錯，不會因編碼不合而死掉）。啟動時會接續磁碟上 `latest.meta.json` 的 `seq`，
+  所以遊戲重開後 `seq` 不會歸零。它永遠不送任何動作指令，無法操作遊戲。
+
+  ```powershell
+  # 一般由模組依 config.properties 自動拉起；手動測試時：
+  uv run sts-state-dump --record-samples N:\projects\github\Windows-MCP-Game\captures\state_samples
+  ```
+
+- **`sts-state-mcp`**：獨立的唯讀 stdio MCP 伺服器，讀上面的傾印目錄，只有兩個唯讀工具，不截圖、不輸入：
+  - `get_game_state(refresh=false, view="compact")` → `{available, view, seq, received_wall, received_unix, age_ms, state}`。
+    預設 `compact` 視圖只留決策需要的欄位（畫面、樓層、HP、金幣、遺物與藥水名稱、戰鬥中的手牌／存活敵人／牌堆計數、
+    地圖只給下一步可選節點），實測約為原始 JSON 的 5–10%（戰鬥中 12.6 KB → 1.0 KB）；`view="full"` 回傳模組原始 JSON。沒有資料時
+    `{available:false, reason}`（`no_state_dir` / `no_state_yet` / `unreadable`）。模組在每場戰鬥的第一次推送
+    發生在敵人意圖建立之前（`intent: "DEBUG"`、`move_adjusted_damage: -1`），伺服器偵測到就自動請 dump 送
+    `STATE` 並等新推送（最多 3 秒），回傳裡多一個 `refresh: {requested, reason, resolved}`；`refresh=true`
+    可隨時強制重送。
+  - `wait_for_state(since_seq, timeout_s=55)` → 每 ~250 ms 輪詢，直到出現 `seq > since_seq`（或 dump 重啟後
+    `received_unix` 變了）才回，回傳同上並多一個 `timed_out`。逾時上限夾在 1..600 秒；`timed_out:true` 時直接用同一個 `since_seq` 再呼叫一次即可
+    （單次呼叫刻意保持短，以配合 Claude Desktop 等未知的工具逾時）。
+
+  設定範例：Codex 用 `docs/codex-config.advisor.example.toml`（貼進 `~/.codex/config.toml`），Claude Desktop 用
+  `docs/claude-desktop-config.advisor.example.json`（皆指向 `.venv\Scripts\sts-state-mcp.exe`）。
+  安裝與試玩步驟見 `docs/ADVISOR_SETUP.md`。
+
 ## 安全邊界
 
 - **綁定**：以 HWND + PID + 程序名 + 程序建立時間比對；任一不符即 `WINDOW_GONE` / `PROCESS_GONE`。不啟動任何程式、不切換視窗、不搶焦點。

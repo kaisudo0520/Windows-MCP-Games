@@ -21,6 +21,8 @@ dev = [
 
 [project.scripts]
 sts-game-mcp = "game_mcp.__main__:main"
+sts-state-dump = "game_mcp.bridge.__main__:main"
+sts-state-mcp = "game_mcp.bridge.mcp_server:main"
 
 [build-system]
 requires = ["setuptools>=61"]

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "sts-state": {
+      "command": "N:\\projects\\github\\Windows-MCP-Game\\.venv\\Scripts\\sts-state-mcp.exe",
+      "args": ["--log-level", "INFO"],
+      "env": {
+        "GAME_MCP_STATE_DIR": "C:\\Users\\Kaisudo\\AppData\\Local\\sts-game-mcp\\state"
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Codex CLI: append to %USERPROFILE%\.codex\config.toml
+[mcp_servers.sts_state]
+command = 'N:\projects\github\Windows-MCP-Game\.venv\Scripts\sts-state-mcp.exe'
+args = ["--log-level", "WARNING"]
+startup_timeout_sec = 30
+
+[mcp_servers.sts_state.env]
+GAME_MCP_STATE_DIR = 'C:\Users\Kaisudo\AppData\Local\sts-game-mcp\state'
