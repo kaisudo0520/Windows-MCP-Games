@@ -21,6 +21,7 @@ dev = [
 
 [project.scripts]
 sts-game-mcp = "game_mcp.__main__:main"
+sts-bot = "sts_bot.__main__:main"
 
 [build-system]
 requires = ["setuptools>=61"]
@@ -42,6 +43,7 @@ ignore = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 markers = [
     "integration: needs a real desktop session (creates a test window, moves the cursor)",
 ]

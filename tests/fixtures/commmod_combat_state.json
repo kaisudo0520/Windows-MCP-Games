@@ -1,0 +1,48 @@
+{
+  "available_commands": ["play", "end", "potion", "key", "click", "wait", "state"],
+  "ready_for_command": true,
+  "in_game": true,
+  "game_state": {
+    "screen_type": "NONE",
+    "screen_state": {},
+    "room_phase": "COMBAT",
+    "room_type": "MonsterRoom",
+    "is_screen_up": false,
+    "current_action": null,
+    "current_hp": 68,
+    "max_hp": 80,
+    "floor": 1,
+    "act": 1,
+    "gold": 99,
+    "seed": 123456789,
+    "class": "IRONCLAD",
+    "ascension_level": 0,
+    "act_boss": "Hexaghost",
+    "relics": [{"name": "Burning Blood", "id": "Burning Blood", "counter": -1}],
+    "potions": [
+      {"name": "Potion Slot", "id": "Potion Slot", "can_use": false, "can_discard": false, "requires_target": false}
+    ],
+    "deck": [],
+    "map": [],
+    "combat_state": {
+      "turn": 1,
+      "cards_discarded_this_turn": 0,
+      "player": {"current_hp": 68, "max_hp": 80, "block": 0, "energy": 3, "powers": [], "orbs": []},
+      "hand": [
+        {"name": "Strike", "id": "Strike_R", "cost": 1, "type": "ATTACK", "rarity": "BASIC", "has_target": true, "is_playable": true, "exhausts": false, "upgrades": 0, "uuid": "u1", "ethereal": false},
+        {"name": "Defend", "id": "Defend_R", "cost": 1, "type": "SKILL", "rarity": "BASIC", "has_target": false, "is_playable": true, "exhausts": false, "upgrades": 1, "uuid": "u2", "ethereal": false},
+        {"name": "Bash", "id": "Bash", "cost": 2, "type": "ATTACK", "rarity": "BASIC", "has_target": true, "is_playable": true, "exhausts": false, "upgrades": 0, "uuid": "u3", "ethereal": false},
+        {"name": "Ascender's Bane", "id": "AscendersBane", "cost": -2, "type": "CURSE", "rarity": "CURSE", "has_target": false, "is_playable": false, "exhausts": false, "upgrades": 0, "uuid": "u4", "ethereal": true}
+      ],
+      "draw_pile": [{"name": "Strike"}, {"name": "Strike"}],
+      "discard_pile": [],
+      "exhaust_pile": [],
+      "limbo": [],
+      "card_in_play": null,
+      "monsters": [
+        {"name": "Cultist", "id": "Cultist", "current_hp": 54, "max_hp": 54, "block": 0, "intent": "BUFF", "move_id": 3, "move_base_damage": 0, "move_adjusted_damage": 0, "move_hits": 0, "half_dead": false, "is_gone": false, "powers": []},
+        {"name": "Jaw Worm", "id": "JawWorm", "current_hp": 0, "max_hp": 44, "block": 0, "intent": "NONE", "move_id": 0, "move_base_damage": 0, "move_adjusted_damage": 0, "move_hits": 0, "half_dead": false, "is_gone": true, "powers": []}
+      ]
+    }
+  }
+}
